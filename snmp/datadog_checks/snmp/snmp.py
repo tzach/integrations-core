@@ -2,11 +2,13 @@
 # All rights reserved
 # Licensed under Simplified BSD License (see LICENSE)
 import fnmatch
+import functools
 import ipaddress
 import json
 import threading
 import time
 from collections import defaultdict
+from concurrent import futures
 
 import pysnmp.proto.rfc1902 as snmp_type
 from pyasn1.codec.ber import decoder
@@ -53,6 +55,7 @@ class SnmpCheck(AgentCheck):
     SC_STATUS = 'snmp.can_check'
     _running = True
     _thread = None
+    _executor = None
     _NON_REPEATERS = 0
     _MAX_REPETITIONS = 25
 
@@ -142,6 +145,7 @@ class SnmpCheck(AgentCheck):
                         continue
                 else:
                     host_config.refresh_with_profile(self.profiles[profile], self.warning, self.log)
+
                 config.discovered_instances[host] = host_config
 
             write_persistent_cache(self.check_id, json.dumps(list(config.discovered_instances)))
@@ -323,28 +327,39 @@ class SnmpCheck(AgentCheck):
         self._thread = threading.Thread(target=self.discover_instances, name=self.name)
         self._thread.daemon = True
         self._thread.start()
+        self._executor = futures.ThreadPoolExecutor(max_workers=self._config.workers)
 
     def check(self, instance):
         config = self._config
         if config.ip_network:
             if self._thread is None:
                 self._start_discovery()
+
+            sent = []
             for host, discovered in list(config.discovered_instances.items()):
-                if self._check_with_config(discovered):
-                    config.failing_instances[host] += 1
-                    if config.failing_instances[host] >= config.allowed_failures:
-                        # Remove it from discovered instances, we'll re-discover it later if it reappears
-                        config.discovered_instances.pop(host)
-                        # Reset the failure counter as well
-                        config.failing_instances.pop(host)
-                else:
-                    # Reset the counter if not's failing
-                    config.failing_instances.pop(host, None)
+                future = self._executor.submit(self._check_with_config, discovered)
+                sent.append(future)
+                future.add_done_callback(functools.partial(self._check_config_done, host))
+            futures.wait(sent)
+
             tags = ['network:{}'.format(config.ip_network)]
             tags.extend(config.tags)
             self.gauge('snmp.discovered_devices_count', len(config.discovered_instances), tags=tags)
         else:
             self._check_with_config(config)
+
+    def _check_config_done(self, host, future):
+        config = self._config
+        if future.result():
+            config.failing_instances[host] += 1
+            if config.failing_instances[host] >= config.allowed_failures:
+                # Remove it from discovered instances, we'll re-discover it later if it reappears
+                config.discovered_instances.pop(host)
+                # Reset the failure counter as well
+                config.failing_instances.pop(host)
+        else:
+            # Reset the counter if not's failing
+            config.failing_instances.pop(host, None)
 
     def _check_with_config(self, config):
         # Reset errors

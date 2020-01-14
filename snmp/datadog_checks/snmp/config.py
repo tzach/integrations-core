@@ -47,6 +47,7 @@ class InstanceConfig:
     DEFAULT_TIMEOUT = 1
     DEFAULT_ALLOWED_FAILURES = 3
     DEFAULT_BULK_THRESHOLD = 0
+    DEFAULT_WORKERS = 5
 
     def __init__(self, instance, warning, log, global_metrics, mibs_path, profiles, profiles_by_oid):
         self.instance = instance
@@ -73,6 +74,7 @@ class InstanceConfig:
         self.discovered_instances = {}
         self.failing_instances = defaultdict(int)
         self.allowed_failures = int(instance.get('discovery_allowed_failures', self.DEFAULT_ALLOWED_FAILURES))
+        self.workers = int(instance.get('workers', self.DEFAULT_WORKERS))
 
         self.bulk_threshold = int(instance.get('bulk_threshold', self.DEFAULT_BULK_THRESHOLD))
 
