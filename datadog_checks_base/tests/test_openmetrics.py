@@ -1464,6 +1464,7 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
     mocked_prometheus_scraper_config['namespace'] = 'ksm'
     mocked_prometheus_scraper_config['label_joins'] = {
         'kube_pod_info': {'label_to_match': 'pod', 'labels_to_get': ['node', 'pod_ip']},
+        'kube_pod_labels': {'labels_to_match': ['pod', 'namespace'], 'labels_to_get': ['*']},
         'kube_deployment_labels': {
             'label_to_match': 'deployment',
             'labels_to_get': [
@@ -1496,6 +1497,9 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-0kch',
             'pod_ip:11.32.3.14',
+            'label_k8s_app:event-exporter',
+            'label_pod_template_hash:958884745',
+            'label_version:v0.1.7',
         ],
         count=1,
     )
@@ -1508,6 +1512,11 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-0kch',
             'pod_ip:11.132.0.7',
+            'label_controller_revision_hash:3483772856',
+            'label_k8s_app:fluentd-gcp',
+            'label_kubernetes_io_cluster_service:true',
+            'label_pod_template_generation:1',
+            'label_version:v2.0.9',
         ],
         count=1,
     )
@@ -1520,6 +1529,11 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-j75z',
             'pod_ip:11.132.0.14',
+            'label_controller_revision_hash:3483772856',
+            'label_k8s_app:fluentd-gcp',
+            'label_kubernetes_io_cluster_service:true',
+            'label_pod_template_generation:1',
+            'label_version:v2.0.9',
         ],
         count=1,
     )
@@ -1532,6 +1546,9 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-j75z',
             'pod_ip:11.32.5.7',
+            'label_k8s_app:heapster',
+            'label_pod_template_hash:2027615481',
+            'label_version:v1.4.3',
         ],
         count=1,
     )
@@ -1544,6 +1561,8 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-0kch',
             'pod_ip:11.32.3.10',
+            'label_k8s_app:kube-dns',
+            'label_pod_template_hash:3092422022',
         ],
         count=1,
     )
@@ -1556,6 +1575,8 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-0kch',
             'pod_ip:11.32.3.9',
+            'label_k8s_app:kube-dns',
+            'label_pod_template_hash:3092422022',
         ],
         count=1,
     )
@@ -1568,6 +1589,8 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-j75z',
             'pod_ip:11.32.5.6',
+            'label_k8s_app:kube-dns-autoscaler',
+            'label_pod_template_hash:97162954',
         ],
         count=1,
     )
@@ -1580,6 +1603,8 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-0kch',
             'pod_ip:11.132.0.7',
+            'label_component:kube-proxy',
+            'label_tier:node',
         ],
         count=1,
     )
@@ -1592,6 +1617,9 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-j75z',
             'pod_ip:11.32.5.45',
+            'label_app:kube-state-metrics',
+            'label_pod_template_hash:3918010230',
+            'label_release:ungaged-panther',
         ],
         count=1,
     )
@@ -1604,6 +1632,9 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-0kch',
             'pod_ip:11.32.3.14',
+            'label_k8s_app:event-exporter',
+            'label_pod_template_hash:958884745',
+            'label_version:v0.1.7',
         ],
         count=1,
     )
@@ -1616,6 +1647,11 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-0kch',
             'pod_ip:11.132.0.7',
+            'label_controller_revision_hash:3483772856',
+            'label_k8s_app:fluentd-gcp',
+            'label_kubernetes_io_cluster_service:true',
+            'label_pod_template_generation:1',
+            'label_version:v2.0.9',
         ],
         count=1,
     )
@@ -1628,6 +1664,11 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-j75z',
             'pod_ip:11.132.0.14',
+            'label_controller_revision_hash:3483772856',
+            'label_k8s_app:fluentd-gcp',
+            'label_kubernetes_io_cluster_service:true',
+            'label_pod_template_generation:1',
+            'label_version:v2.0.9',
         ],
         count=1,
     )
@@ -1640,6 +1681,9 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-j75z',
             'pod_ip:11.32.5.7',
+            'label_k8s_app:heapster',
+            'label_pod_template_hash:2027615481',
+            'label_version:v1.4.3',
         ],
         count=1,
     )
@@ -1652,6 +1696,8 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-0kch',
             'pod_ip:11.32.3.10',
+            'label_k8s_app:kube-dns',
+            'label_pod_template_hash:3092422022',
         ],
         count=1,
     )
@@ -1664,6 +1710,8 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
             'condition:true',
             'node:gke-foobar-test-kube-default-pool-9b4ff111-0kch',
             'pod_ip:11.32.3.9',
+            'label_k8s_app:kube-dns',
+            'label_pod_template_hash:3092422022',
         ],
         count=1,
     )
@@ -1673,8 +1721,8 @@ def test_label_joins(aggregator, mocked_prometheus_check, mocked_prometheus_scra
         tags=[
             'namespace:kube-system',
             'deployment:event-exporter-v0.1.7',
-            'label_k8s_app:event-exporter',
             'label_addonmanager_kubernetes_io_mode:Reconcile',
+            'label_k8s_app:event-exporter',
             'label_kubernetes_io_cluster_service:true',
         ],
         count=1,
