@@ -1278,3 +1278,18 @@ def test_cisco_nexus(aggregator):
             aggregator.assert_metric('snmp.{}'.format(metric), metric_type=aggregator.GAUGE, tags=tags, count=1)
 
     aggregator.assert_all_metrics_covered()
+
+
+def test_proliant(aggregator):
+    instance = common.generate_instance_config([])
+    instance['community_string'] = 'hpe-proliant'
+    instance['profile'] = 'hpe-proliant'
+    instance['enforce_mib_constraints'] = False
+
+    # We need the full path as we're not in installed mode
+    definition_file_path = os.path.join(os.path.dirname(snmp.__file__), 'data', 'profiles', 'hpe-proliant.yaml')
+    init_config = {'profiles': {'hpe-proliant': {'definition_file': definition_file_path}}}
+    check = SnmpCheck('snmp', init_config, [instance])
+
+    check.check(instance)
+    # Doesn't collect memory and network metrics ? why??
