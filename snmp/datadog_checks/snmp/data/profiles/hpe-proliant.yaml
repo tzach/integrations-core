@@ -2,160 +2,280 @@ sysobjectid: 1.3.6.1.4.1.232.*
 
 metrics:
   - MIB: CPQSTDEQ-MIB
-    table: cpqSeCpuTable
+    table:
+      OID: 1.3.6.1.4.1.232.1.2.2.1
+      name: cpqSeCpuTable
     symbols:
-      - cpqSeCpuSlot
-      - cpqSeCpuSpeed
-      - cpqSeCpuStatus
-      - cpqSeCpuExtSpeed
-      - cpqSeCpuCore
-      - cpqSeCPUCoreMaxThreads
-      - cpqSeCpuPrimary
+      - OID: 1.3.6.1.4.1.232.1.2.2.1.1.2
+        name: cpqSeCpuSlot
+      - OID: 1.3.6.1.4.1.232.1.2.2.1.1.4
+        name: cpqSeCpuSpeed
+      - OID: 1.3.6.1.4.1.232.1.2.2.1.1.6
+        name: cpqSeCpuStatus
+      - OID: 1.3.6.1.4.1.232.1.2.2.1.1.7
+        name: cpqSeCpuExtSpeed
+      - OID: 1.3.6.1.4.1.232.1.2.2.1.1.15
+        name: cpqSeCpuCore
+      - OID: 1.3.6.1.4.1.232.1.2.2.1.1.25
+        name: cpqSeCPUCoreMaxThreads
+      - OID: 1.3.6.1.4.1.232.1.2.2.1.1.27
+        name: cpqSeCpuPrimary
     metric_tags:
-      - column: cpqSeCpuUnitIndex
+      - column:
+          OID: 1.3.6.1.4.1.232.1.2.2.1.1.1
+          name: cpqSeCpuUnitIndex
         tag: cpu_index
   - MIB: CPQHOST-MIB
-    table: cpqHoCpuUtilTable
+    table:
+      OID: 1.3.6.1.4.1.232.11.2.3.1
+      name: cpqHoCpuUtilTable
     symbols:
-      - cpqHoCpuUtilMin
-      - cpqHoCpuUtilFiveMin
-      - cpqHoCpuUtilThirtyMin
-      - cpqHoCpuUtilHour
+      - OID: 1.3.6.1.4.1.232.11.2.3.1.1.2
+        name: cpqHoCpuUtilMin
+      - OID: 1.3.6.1.4.1.232.11.2.3.1.1.3
+        name: cpqHoCpuUtilFiveMin
+      - OID: 1.3.6.1.4.1.232.11.2.3.1.1.4
+        name: cpqHoCpuUtilThirtyMin
+      - OID: 1.3.6.1.4.1.232.11.2.3.1.1.5
+        name: cpqHoCpuUtilHour
     metric_tags:
-      - column: cpqHoCpuUtilUnitIndex
+      - column:
+          OID: 1.3.6.1.4.1.232.11.2.3.1.1.1
+          name: cpqHoCpuUtilUnitIndex
         tag: cpu_unit_index
   - MIB: CPQHOST-MIB
-    table: cpqHoFileSysTable
+    table:
+      OID: 1.3.6.1.4.1.232.11.2.4.1
+      name: cpqHoFileSysTable
     symbols:
-      - cpqHoFileSysSpaceTotal
-      - cpqHoFileSysSpaceUsed
-      - cpqHoFileSysPercentSpaceUsed
-      - cpqHoFileSysAllocUnitsTotal
-      - cpqHoFileSysAllocUnitsUsed
-      - cpqHoFileSysStatus
+      - OID: 1.3.6.1.4.1.232.11.2.4.1.1.3
+        name: cpqHoFileSysSpaceTotal
+      - OID: 1.3.6.1.4.1.232.11.2.4.1.1.4
+        name: cpqHoFileSysSpaceUsed
+      - OID: 1.3.6.1.4.1.232.11.2.4.1.1.5
+        name: cpqHoFileSysPercentSpaceUsed
+      - OID: 1.3.6.1.4.1.232.11.2.4.1.1.6
+        name: cpqHoFileSysAllocUnitsTotal
+      - OID: 1.3.6.1.4.1.232.11.2.4.1.1.7
+        name: cpqHoFileSysAllocUnitsUsed
+      - OID: 1.3.6.1.4.1.232.11.2.4.1.1.8
+        name: cpqHoFileSysStatus
     metric_tags:
-      - column: cpqHoFileSysIndex
+      - column:
+          OID: 1.3.6.1.4.1.232.11.2.4.1.1.1
+          name: cpqHoFileSysIndex
         tag: file_sys_index
   - MIB: CPQSINFO-MIB
-    table: cpqSiMemModuleTable
+    table:
+      OID: 1.3.6.1.4.1.232.2.2.4.5
+      name: cpqSiMemModuleTable
     symbols:
-      - cpqSiMemModuleSize
-      - cpqSiMemModuleType
-      - cpqSiMemModuleSpeed
-      - cpqSiMemModuleTechnology
-      - cpqSiMemModuleECCStatus
-      - cpqSiMemModuleFrequency
-      - cpqSiMemModuleCellStatus
+      - OID: 1.3.6.1.4.1.232.2.2.4.5.1.3
+        name: cpqSiMemModuleSize
+      - OID: 1.3.6.1.4.1.232.2.2.4.5.1.4
+        name: cpqSiMemModuleType
+      - OID: 1.3.6.1.4.1.232.2.2.4.5.1.5
+        name: cpqSiMemModuleSpeed
+      - OID: 1.3.6.1.4.1.232.2.2.4.5.1.6
+        name: cpqSiMemModuleTechnology
+      - OID: 1.3.6.1.4.1.232.2.2.4.5.1.11
+        name: cpqSiMemModuleECCStatus
+      - OID: 1.3.6.1.4.1.232.2.2.4.5.1.13
+        name: cpqSiMemModuleFrequency
+      - OID: 1.3.6.1.4.1.232.2.2.4.5.1.15
+        name: cpqSiMemModuleCellStatus
     metric_tags:
-      - column: cpqSiMemBoardIndex
+      - column:
+          OID: 1.3.6.1.4.1.232.2.2.4.5.1.1
+          name: cpqSiMemBoardIndex
         tag: mem_board_index
-      - column: cpqSiMemModuleIndex
+      - column:
+          OID: 1.3.6.1.4.1.232.2.2.4.5.1.2
+          name: cpqSiMemModuleIndex
         tag: mem_module_index
   - MIB: CPQIDA-MIB
-    table: cpqDaPhyDrvTable
     forced_type: monotonic_count
+    table:
+      OID: 1.3.6.1.4.1.232.3.2.5.1
+      name: cpqDaPhyDrvTable
     symbols:
-      - cpqDaPhyDrvUsedReallocs
-      - cpqDaPhyDrvRefHours
-      - cpqDaPhyDrvHardReadErrs
-      - cpqDaPhyDrvRecvReadErrs
-      - cpqDaPhyDrvHardWriteErrs
-      - cpqDaPhyDrvRecvWriteErrs
-      - cpqDaPhyDrvHSeekErrs
-      - cpqDaPhyDrvSeekErrs
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.8
+        name: cpqDaPhyDrvUsedReallocs
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.9
+        name: cpqDaPhyDrvRefHours
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.16
+        name: cpqDaPhyDrvHardReadErrs
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.17
+        name: cpqDaPhyDrvRecvReadErrs
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.18
+        name: cpqDaPhyDrvHardWriteErrs
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.19
+        name: cpqDaPhyDrvRecvWriteErrs
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.20
+        name: cpqDaPhyDrvHSeekErrs
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.21
+        name: cpqDaPhyDrvSeekErrs
     metric_tags:
-      - column: cpqDaPhyDrvCntlrIndex
+      - column:
+          OID: 1.3.6.1.4.1.232.3.2.5.1.1.1
+          name: cpqDaPhyDrvCntlrIndex
         tag: drive_cntrl_idx
-      - column: cpqDaPhyDrvIndex
+      - column:
+          OID: 1.3.6.1.4.1.232.3.2.5.1.1.2
+          name: cpqDaPhyDrvIndex
         tag: drive_index
   - MIB: CPQIDA-MIB
-    table: cpqDaPhyDrvTable
+    table:
+      OID: 1.3.6.1.4.1.232.3.2.5.1
+      name: cpqDaPhyDrvTable
     symbols:
-      - cpqDaPhyDrvStatus
-      - cpqDaPhyDrvFactReallocs
-      - cpqDaPhyDrvSpinupTime
-      - cpqDaPhyDrvSize
-      - cpqDaPhyDrvSmartStatus
-      - cpqDaPhyDrvCurrentTemperature
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.6
+        name: cpqDaPhyDrvStatus
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.7
+        name: cpqDaPhyDrvFactReallocs
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.22
+        name: cpqDaPhyDrvSpinupTime
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.45
+        name: cpqDaPhyDrvSize
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.57
+        name: cpqDaPhyDrvSmartStatus
+      - OID: 1.3.6.1.4.1.232.3.2.5.1.1.70
+        name: cpqDaPhyDrvCurrentTemperature
     metric_tags:
-      - column: cpqDaPhyDrvCntlrIndex
+      - column:
+          OID: 1.3.6.1.4.1.232.3.2.5.1.1.1
+          name: cpqDaPhyDrvCntlrIndex
         tag: drive_cntrl_idx
-      - column: cpqDaPhyDrvIndex
+      - column:
+          OID: 1.3.6.1.4.1.232.3.2.5.1.1.2
+          name: cpqDaPhyDrvIndex
         tag: drive_index
-
-  ### the rest of the file is a copy of "generic-router.yaml"
   - MIB: IF-MIB
-    table: ifTable
+    table:
+      OID: 1.3.6.1.2.1.2.2
+      name: ifTable
     forced_type: monotonic_count
     symbols:
-      - ifInErrors
-      - ifInDiscards
-      - ifOutErrors
-      - ifOutDiscards
+      - OID: 1.3.6.1.2.1.2.2.1.14
+        name: ifInErrors
+      - OID: 1.3.6.1.2.1.2.2.1.13
+        name: ifInDiscards
+      - OID: 1.3.6.1.2.1.2.2.1.20
+        name: ifOutErrors
+      - OID: 1.3.6.1.2.1.2.2.1.19
+        name: ifOutDiscards
     metric_tags:
-      - tag: interface
-        column: ifDescr
+      - column:
+          OID: 1.3.6.1.2.1.2.2.1.2
+          name: ifDescr
+        tag: interface
   - MIB: IF-MIB
-    table: ifTable
+    table:
+      OID: 1.3.6.1.2.1.2.2
+      name: ifTable
     symbols:
-      - ifAdminStatus
-      - ifOperStatus
+      - OID: 1.3.6.1.2.1.2.2.1.7
+        name: ifAdminStatus
+      - OID: 1.3.6.1.2.1.2.2.1.8
+        name: ifOperStatus
     metric_tags:
-      - tag: interface
-        column: ifDescr
+      - column:
+          OID: 1.3.6.1.2.1.2.2.1.2
+          name: ifDescr
+        tag: interface
   - MIB: IF-MIB
-    table: ifXTable
+    table:
+      OID: 1.3.6.1.2.1.31.1.1
+      name: ifXTable
     forced_type: monotonic_count
     symbols:
-      - ifHCInOctets
-      - ifHCInUcastPkts
-      - ifHCInMulticastPkts
-      - ifHCInBroadcastPkts
-      - ifHCOutOctets
-      - ifHCOutUcastPkts
-      - ifHCOutMulticastPkts
-      - ifHCOutBroadcastPkts
+      - OID: 1.3.6.1.2.1.31.1.1.1.6
+        name: ifHCInOctets
+      - OID: 1.3.6.1.2.1.31.1.1.1.7
+        name: ifHCInUcastPkts
+      - OID: 1.3.6.1.2.1.31.1.1.1.8
+        name: ifHCInMulticastPkts
+      - OID: 1.3.6.1.2.1.31.1.1.1.9
+        name: ifHCInBroadcastPkts
+      - OID: 1.3.6.1.2.1.31.1.1.1.10
+        name: ifHCOutOctets
+      - OID: 1.3.6.1.2.1.31.1.1.1.11
+        name: ifHCOutUcastPkts
+      - OID: 1.3.6.1.2.1.31.1.1.1.12
+        name: ifHCOutMulticastPkts
+      - OID: 1.3.6.1.2.1.31.1.1.1.13
+        name: ifHCOutBroadcastPkts
     metric_tags:
-      - tag: interface
-        column: ifName
+      - column:
+          OID: 1.3.6.1.2.1.31.1.1.1.1
+          name: ifName
+        tag: interface
   - MIB: TCP-MIB
-    symbol: tcpActiveOpens
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.6.5
+      name: tcpActiveOpens
   - MIB: TCP-MIB
-    symbol: tcpPassiveOpens
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.6.6
+      name: tcpPassiveOpens
   - MIB: TCP-MIB
-    symbol: tcpAttemptFails
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.6.7
+      name: tcpAttemptFails
   - MIB: TCP-MIB
-    symbol: tcpEstabResets
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.6.8
+      name: tcpEstabResets
   - MIB: TCP-MIB
-    symbol: tcpCurrEstab
+    symbol:
+      OID: 1.3.6.1.2.1.6.9
+      name: tcpCurrEstab
   - MIB: TCP-MIB
-    symbol: tcpHCInSegs
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.6.17
+      name: tcpHCInSegs
   - MIB: TCP-MIB
-    symbol: tcpHCOutSegs
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.6.18
+      name: tcpHCOutSegs
   - MIB: TCP-MIB
-    symbol: tcpRetransSegs
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.6.12
+      name: tcpRetransSegs
   - MIB: TCP-MIB
-    symbol: tcpInErrs
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.6.14
+      name: tcpInErrs
   - MIB: TCP-MIB
-    symbol: tcpOutRsts
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.6.15
+      name: tcpOutRsts
   - MIB: UDP-MIB
-    symbol: udpHCInDatagrams
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.7.8
+      name: udpHCInDatagrams
   - MIB: UDP-MIB
-    symbol: udpNoPorts
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.7.2
+      name: udpNoPorts
   - MIB: UDP-MIB
-    symbol: udpInErrors
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.7.3
+      name: udpInErrors
   - MIB: UDP-MIB
-    symbol: udpHCOutDatagrams
     forced_type: monotonic_count
+    symbol:
+      OID: 1.3.6.1.2.1.7.9
+      name: udpHCOutDatagrams
