@@ -3,12 +3,12 @@
 # Licensed under Simplified BSD License (see LICENSE)
 import json
 import os
+import re
 from datetime import datetime
 
-from com.vmware.cis.tagging_client import CategoryModel, TagAssociation, TagModel
-from com.vmware.vapi.std_client import DynamicID
 from mock import MagicMock
 from pyVmomi import vim
+from requests import Response
 from six import iteritems
 from tests.common import HERE
 
@@ -100,32 +100,72 @@ class MockedAPI(object):
         return datetime.now()
 
 
+def mock_http_rest_api(url, **kwargs):
+    class MockResponse(Response):
+        def __init__(self, json_data, status_code):
+            super().__init__()
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            return self.json_data
+
+    if re.match(r'.*/category$', url):
+        return MockResponse({"value": ['cat_id_1', 'cat_id_2']}, 200)
+    elif re.match(r'.*/category/id:.*$', url):
+        parts = url.split('_')
+        num = parts[len(parts) - 1]
+        return MockResponse(
+            {
+                "value": {
+                    "name": "my_cat_name_{}".format(num),
+                    "description": "",
+                    "id": "cat_id_{}".format(num),
+                    "used_by": [],
+                    "cardinality": "SINGLE",
+                }
+            },
+            200,
+        )
+    elif re.match(r'.*/tagging/tag$', url):
+        return MockResponse({"value": ['tag_id_1', 'tag_id_2', 'tag_id_3']}, 200)
+    elif re.match(r'.*/tagging/tag/id:.*$', url):
+        parts = url.split('_')
+        num = parts[len(parts) - 1]
+        return MockResponse(
+            {
+                "value": {
+                    "category_id": "cat_id_{}".format(num),
+                    "name": "my_tag_name_{}".format(num),
+                    "description": "",
+                    "id": "xxx",
+                    "used_by": [],
+                }
+            },
+            200,
+        )
+    elif re.match(r'.*/tagging/tag-association\?~action=list-attached-objects-on-tags$', url):
+        return MockResponse(
+            {
+                "value": [
+                    {"tag_id": "tag_id_1", "object_ids": [{"id": "VM4-4-1", "type": "VirtualMachine"}]},
+                    {"tag_id": "tag_id_2", "object_ids": [{"id": "VM4-4-1", "type": "VirtualMachine"}]},
+                    {"tag_id": "tag_id_2", "object_ids": [{"id": "10.0.0.104-1", "type": "HostSystem"}]},
+                    {"tag_id": "tag_id_2", "object_ids": [{"id": "NFS-Share-1", "type": "Datastore"}]},
+                ]
+            },
+            200,
+        )
+    return MockResponse(None, 404)
+
+
 class MockedRestAPI(VSphereRestAPI):
     def __init__(self, *args, **kwargs):
         super(MockedRestAPI, self).__init__(*args, **kwargs)
 
-        self._client = MagicMock()
-        self._client.tagging.Category.list.return_value = ['cat_id_1', 'cat_id_2']
-        self._client.tagging.Category.get.side_effect = [
-            CategoryModel(name='my_cat_name_1'),
-            CategoryModel(name='my_cat_name_2'),
-        ]
-
-        self._client.tagging.Tag.list.return_value = ['tag_id_1', 'tag_id_2', 'tag_id_3']
-        self._client.tagging.Tag.get.side_effect = [
-            TagModel(name='my_tag_name_1', category_id='cat_id_1'),
-            TagModel(name='my_tag_name_2', category_id='cat_id_2'),
-            TagModel(name='my_tag_name_3', category_id='cat_id_3'),
-        ]
-
-        self._client.tagging.TagAssociation.list_attached_objects_on_tags.return_value = [
-            TagAssociation.TagToObjects(tag_id='tag_id_1', object_ids=[DynamicID(type='VirtualMachine', id='VM4-4-1')]),
-            TagAssociation.TagToObjects(tag_id='tag_id_2', object_ids=[DynamicID(type='VirtualMachine', id='VM4-4-1')]),
-            TagAssociation.TagToObjects(
-                tag_id='tag_id_2', object_ids=[DynamicID(type='HostSystem', id='10.0.0.104-1')]
-            ),
-            TagAssociation.TagToObjects(tag_id='tag_id_2', object_ids=[DynamicID(type='Datastore', id='NFS-Share-1')]),
-        ]
+        self._http = MagicMock()
+        self._http.get = mock_http_rest_api
+        self._http.post = mock_http_rest_api
 
     def smart_connect(self):
         pass

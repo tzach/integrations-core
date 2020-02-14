@@ -130,7 +130,7 @@ class VSphereCheck(AgentCheck):
         t0 = Timer()
         try:
             mor_tags = self.api_rest.get_resource_tags()
-        except APIConnectionError as e:
+        except Exception as e:
             self.log.error("Failed to collect tags: %s", e)
             return
         self.gauge('datadog.vsphere.query_tags.time', t0.total(), tags=self.config.base_tags, raw=True)
