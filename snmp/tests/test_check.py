@@ -1425,7 +1425,8 @@ def test_proliant(aggregator):
             'snmp.{}'.format(metric), metric_type=aggregator.MONOTONIC_COUNT, tags=common.CHECK_TAGS, count=1
         )
     aggregator.assert_all_metrics_covered()
-        
+
+
 def test_dell_poweredge(aggregator):
     instance = common.generate_instance_config([])
     instance['community_string'] = 'dell-poweredge'
