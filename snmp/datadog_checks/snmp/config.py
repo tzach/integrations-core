@@ -6,6 +6,7 @@ from collections import defaultdict
 
 from pyasn1.type.univ import OctetString
 from pysnmp import hlapi
+from pysnmp.hlapi.asyncore.cmdgen import lcd
 from pysnmp.smi import builder, view
 
 from datadog_checks.base import ConfigurationError, is_affirmative
@@ -108,15 +109,17 @@ class InstanceConfig:
 
         self._context_data = hlapi.ContextData(*self.get_context_data(instance))
 
+        if ip_address:
+            self._addr_name, _ = lcd.configure(
+                self._snmp_engine, self._auth_data, self._transport, self._context_data.contextName
+            )
+
     def resolve_oid(self, oid):
         return self._resolver.resolve_oid(oid)
 
     def refresh_with_profile(self, profile, warning, log):
         self.metrics.extend(profile['definition']['metrics'])
         self.all_oids, self.bulk_oids, self.parsed_metrics = self.parse_metrics(self.metrics, warning, log)
-
-    def call_cmd(self, cmd, *args, **kwargs):
-        return cmd(self._snmp_engine, self._auth_data, self._transport, self._context_data, *args, **kwargs)
 
     @staticmethod
     def create_snmp_engine(mibs_path):

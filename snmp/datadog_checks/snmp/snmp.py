@@ -13,12 +13,13 @@ from pyasn1.codec.ber import decoder
 from pysnmp import hlapi
 from pysnmp.error import PySnmpError
 from pysnmp.smi import builder
-from pysnmp.smi.exval import endOfMibView, noSuchInstance, noSuchObject
+from pysnmp.smi.exval import noSuchInstance, noSuchObject
 from six import iteritems
 
 from datadog_checks.base import AgentCheck, ConfigurationError, is_affirmative
 from datadog_checks.base.errors import CheckException
 
+from .cmd import snmp_bulk, snmp_get, snmp_getnext
 from .compat import read_persistent_cache, total_time_to_temporal_percent, write_persistent_cache
 from .config import InstanceConfig, ParsedTableMetric
 from .utils import get_profile_definition
@@ -153,11 +154,6 @@ class SnmpCheck(AgentCheck):
             if discovery_interval - time_elapsed > 0:
                 time.sleep(discovery_interval - time_elapsed)
 
-    def raise_on_error_indication(self, error_indication, ip_address):
-        if error_indication:
-            message = '{} for instance {}'.format(error_indication, ip_address)
-            raise CheckException(message)
-
     def fetch_results(self, config, all_oids, bulk_oids):
         """
         Perform a snmpwalk on the domain specified by the oids, on the device
@@ -180,19 +176,15 @@ class SnmpCheck(AgentCheck):
         for oid in bulk_oids:
             try:
                 self.log.debug('Running SNMP command getBulk on OID %r', oid)
-                binds_iterator = config.call_cmd(
-                    hlapi.bulkCmd,
+                binds = snmp_bulk(
+                    config,
+                    oid,
                     self._NON_REPEATERS,
                     self._MAX_REPETITIONS,
-                    oid,
-                    lookupMib=enforce_constraints,
-                    ignoreNonIncreasingOid=self.ignore_nonincreasing_oid,
-                    lexicographicMode=False,
+                    enforce_constraints,
+                    self.ignore_nonincreasing_oid,
                 )
-                binds, current_error = self._consume_binds_iterator(binds_iterator, config)
                 all_binds.extend(binds)
-                error = current_error if not error else error
-
             except PySnmpError as e:
                 message = 'Failed to collect some metrics: {}'.format(e)
                 if not error:
@@ -221,12 +213,9 @@ class SnmpCheck(AgentCheck):
             try:
                 oids_batch = oids[first_oid : first_oid + self.oid_batch_size]
                 self.log.debug('Running SNMP command get on OIDS %s', oids_batch)
-                error_indication, error_status, _, var_binds = next(
-                    config.call_cmd(hlapi.getCmd, *oids_batch, lookupMib=enforce_constraints)
-                )
-                self.log.debug('Returned vars: %s', var_binds)
 
-                self.raise_on_error_indication(error_indication, config.ip_address)
+                var_binds = snmp_get(config, oids_batch, lookup_mib=enforce_constraints)
+                self.log.debug('Returned vars: %s', var_binds)
 
                 missing_results = []
 
@@ -242,14 +231,12 @@ class SnmpCheck(AgentCheck):
                     # If we didn't catch the metric using snmpget, try snmpnext
                     # Don't walk through the entire MIB, stop at end of table
                     self.log.debug('Running SNMP command getNext on OIDS %s', missing_results)
-                    binds_iterator = config.call_cmd(
-                        hlapi.nextCmd,
-                        *missing_results,
-                        lookupMib=enforce_constraints,
-                        ignoreNonIncreasingOid=self.ignore_nonincreasing_oid,
-                        lexicographicMode=False
+                    binds = snmp_getnext(
+                        config,
+                        missing_results,
+                        lookup_mib=enforce_constraints,
+                        ignore_nonincreasing_oid=self.ignore_nonincreasing_oid,
                     )
-                    binds, error = self._consume_binds_iterator(binds_iterator, config)
                     all_binds.extend(binds)
 
             except PySnmpError as e:
@@ -266,10 +253,9 @@ class SnmpCheck(AgentCheck):
     def fetch_sysobject_oid(self, config):
         """Return the sysObjectID of the instance."""
         # Reference sysObjectID directly, see http://oidref.com/1.3.6.1.2.1.1.2
-        oid = hlapi.ObjectType(hlapi.ObjectIdentity((1, 3, 6, 1, 2, 1, 1, 2)))
+        oid = hlapi.ObjectType(hlapi.ObjectIdentity((1, 3, 6, 1, 2, 1, 1, 2, 0)))
         self.log.debug('Running SNMP command on OID %r', oid)
-        error_indication, _, _, var_binds = next(config.call_cmd(hlapi.nextCmd, oid, lookupMib=False))
-        self.raise_on_error_indication(error_indication, config.ip_address)
+        var_binds = snmp_get(config, [oid], lookup_mib=False)
         self.log.debug('Returned vars: %s', var_binds)
         return var_binds[0][1].prettyPrint()
 
@@ -284,27 +270,6 @@ class SnmpCheck(AgentCheck):
         if not oids:
             raise ConfigurationError('No profile matching sysObjectID {}'.format(sys_object_oid))
         return self.profiles_by_oid[oids[-1]]
-
-    def _consume_binds_iterator(self, binds_iterator, config):
-        all_binds = []
-        error = None
-        for error_indication, error_status, _, var_binds_table in binds_iterator:
-            self.log.debug('Returned vars: %s', var_binds_table)
-
-            self.raise_on_error_indication(error_indication, config.ip_address)
-
-            if error_status:
-                message = '{} for instance {}'.format(error_status.prettyPrint(), config.ip_address)
-                error = message
-
-                # submit CRITICAL service check if we can't connect to device
-                if 'unknownUserName' in message:
-                    self.log.error(message)
-                else:
-                    self.warning(message)
-
-            all_binds.extend(var_bind for var_bind in var_binds_table if var_bind[1] is not endOfMibView)
-        return all_binds, error
 
     def _start_discovery(self):
         cache = read_persistent_cache(self.check_id)
